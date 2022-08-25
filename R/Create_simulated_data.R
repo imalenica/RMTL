@@ -19,8 +19,10 @@
 #' data<-Create_simulated_data(t=5,p=50, n=20, type="Regression", Regularization="L21")
 #' str(data)
 #' @export
-Create_simulated_data <- function(t=5,p=50, n=20, type="Regression",
+
+Create_simulated_data <- function(t=5,p=10,n=50, type="Regression",
                                   Regularization="L21"){
+#True Coeffs
 W <- matrix(data=stats::rnorm(t*p),ncol=t, nrow = p)
 
 if(Regularization=="Lasso"){
@@ -29,7 +31,7 @@ if(Regularization=="Lasso"){
     mask[mask>0] <- 1
     W <- W*mask
 } else if (Regularization=="L21"){
-    W[1:p*0.9,] <- 0
+    W[1:p*0.8,] <- 0
 } else if (Regularization=="Trace"){
     requireNamespace('corpcor')
     eigen <- corpcor::fast.svd(W)
