@@ -13,7 +13,7 @@ Imports: MASS (>= 7.3-50), psych (>= 1.8.4), corpcor (>= 1.6.9),
 Date: 2019-02-15
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+RoxygenNote: 7.2.0
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no

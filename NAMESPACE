@@ -2,6 +2,7 @@
 
 S3method(plot,cvMTL)
 S3method(predict,MTL)
+S3method(predict,cvMTL)
 S3method(print,MTL)
 export(Create_simulated_data)
 export(MTL)

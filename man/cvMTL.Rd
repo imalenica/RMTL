@@ -4,10 +4,22 @@
 \alias{cvMTL}
 \title{K-fold cross-validation}
 \usage{
-cvMTL(X, Y, type = "Classification", Regularization = "L21",
-  Lam1_seq = 10^seq(1, -4, -1), Lam2 = 0, G = NULL, k = 2,
-  opts = list(init = 0, tol = 10^-3, maxIter = 1000), stratify = FALSE,
-  nfolds = 5, ncores = 2, parallel = FALSE)
+cvMTL(
+  X,
+  Y,
+  type = "Classification",
+  Regularization = "L21",
+  Lam1_seq = 10^seq(1, -4, -1),
+  Lam2 = 0,
+  G = NULL,
+  k = 2,
+  opts = list(init = 0, tol = 10^-3, maxIter = 1000),
+  stratify = FALSE,
+  nfolds = 5,
+  foldid = NULL,
+  ncores = 2,
+  parallel = FALSE
+)
 }
 \arguments{
 \item{X}{A set of feature matrices}
@@ -46,6 +58,12 @@ cross-validation}
 
 \item{nfolds}{The number of folds}
 
+\item{foldid}{An optional list of vectors, where each vector \eqn{k} is of
+the same length as the \eqn{k}th \code{Y} and take values between 1 and
+\code{nfold}, identifying for each task and each observation the fold
+for which the observation belongs in the validation set. If supplied,
+\code{nfold} and \code{stratify} will be ignored}
+
 \item{ncores}{The number of cores used for parallel computing with the default value of 2}
 
 \item{parallel}{\code{parallel=TRUE} is used for parallel computing}
@@ -60,7 +78,7 @@ Perform the k-fold cross-validation to estimate the \eqn{\lambda_1}.
 #create the example data
 data<-Create_simulated_data(Regularization="L21", type="Classification")
 #perform the cross validation
-cvfit<-cvMTL(data$X, data$Y, type="Classification", Regularization="L21", 
+cvfit<-cvMTL(data$X, data$Y, type="Classification", Regularization="L21",
     Lam2=0, opts=list(init=0,  tol=10^-6, maxIter=1500), nfolds=5,
     stratify=TRUE, Lam1_seq=10^seq(1,-4, -1))
 #show meta-infomration
