@@ -450,42 +450,6 @@ plot.cvMTL <- function(x, ...){
          ylab="error")
 }
 
-#' Predict the outcomes of new individuals
-#'
-#' Predict the outcomes of new individuals. For classification, the
-#'     probability of the individual being assigned to positive label P(y==1) is estimated, and for regression, the
-#'     prediction score is estimated
-#'
-#' @param object A trained cvMTL model
-#' @param newX The feature matrices of new individuals
-#' @param ... Other parameters
-#' @return The predictive outcome
-#' @examples
-#' #Create data
-#' data<-Create_simulated_data(Regularization="L21", type="Regression")
-#' #Train
-#' model<-cvMTL(data$X, data$Y, type="Regression", Regularization="L21",
-#'     Lam1=0.1, Lam2=0, opts=list(init=0,  tol=10^-6, maxIter=1500))
-#  #Predict
-#' predict(model, newX=data$tX)
-#'
-#' @export
-predict.cvMTL <- function(object, newX=NULL, ...){
-  if(!is.null(newX)){
-    object <- object$m
-    task_num <- length(newX)
-    score <- lapply(c(1:task_num), function(x) newX[[x]] %*% object$W[,x] + object$C[x])
-    if (object$type=="Classification"){
-      y <- lapply(c(1:task_num), function(x) exp(score[[x]]))
-      y <- lapply(y, function(x) x/(1+x))
-    }else if (object$type=="Regression"){
-      y <- score
-    }
-    return(y)
-  }else{stop("no new data (X) is provided")}
-}
-
-
 getCVPartition <- function(Y, cv_fold, stratify){
 task_num = length(Y);
 
