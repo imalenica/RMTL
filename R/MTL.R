@@ -1,7 +1,7 @@
-#' Train a multi-task learning model. 
+#' Train a multi-task learning model.
 #'
-#' Train a multi-task learning model. 
-#' 
+#' Train a multi-task learning model.
+#'
 #' @param X A set of feature matrices
 #' @param Y A set of responses, could be binary (classification
 #'     problem) or continues (regression problem). The valid
@@ -9,7 +9,7 @@
 #' @param type The type of problem, must be \code{Regression} or
 #'     \code{Classification}
 #' @param Regularization The type of MTL algorithm (cross-task regularizer). The value must be
-#'     one of \{\code{L21}, \code{Lasso}, \code{Trace}, \code{Graph}, \code{CMTL} \} 
+#'     one of \{\code{L21}, \code{Lasso}, \code{Trace}, \code{Graph}, \code{CMTL} \}
 #' @param Lam1 A positive constant \eqn{\lambda_{1}} to control the
 #'     cross-task regularization
 #' @param Lam2 A non-negative constant \eqn{\lambda_{2}} to improve the
@@ -17,11 +17,11 @@
 #'     \code{Regularization=CMTL})
 #' @param Lam1_seq A positive sequence of \code{Lam1}. If the parameter
 #'     is given, the model is trained using warm-start technique. Otherwise, the
-#'     model is trained based on the \code{Lam1} and the initial search point (\code{opts$init}). 
+#'     model is trained based on the \code{Lam1} and the initial search point (\code{opts$init}).
 #' @param opts Options of the optimization procedure. One can set the
 #'     initial search point, the tolerance and the maximized number of
 #'     iterations using this parameter. The default value is
-#'     \code{list(init=0,  tol=10^-3, maxIter=1000)} 
+#'     \code{list(init=0,  tol=10^-3, maxIter=1000)}
 #' @param G A matrix to encode the network information. This parameter
 #'     is only used in the MTL with graph structure (\code{Regularization=Graph} )
 #' @param k A positive number to modulate the structure of clusters
@@ -30,7 +30,7 @@
 #'     complex clustering structure.
 #' @return The trained model including the coefficient matrix \code{W}
 #'     and intercepts \code{C} and related meta information
-#' 
+#'
 #' @examples
 #' #create the example data
 #' data<-Create_simulated_data(Regularization="L21", type="Regression")
@@ -63,7 +63,7 @@ MTL <- function(X, Y, type="Classification", Regularization="L21",
     }else{
         stop("data X or Y doesnot exists")
     }
-    
+
     #test the validity of problem type
     if(type=="Classification"){
         method <- "LR"
@@ -73,7 +73,7 @@ MTL <- function(X, Y, type="Classification", Regularization="L21",
         stop("neither Regression or Classification")
     }
 
-    #test the validity of regularization 
+    #test the validity of regularization
     allRegularizations <- c("L21", "Lasso", "Graph", "CMTL", "Trace")
     if (is.element(Regularization, allRegularizations)){
         method <- paste0(method, "_", Regularization)
@@ -83,10 +83,10 @@ MTL <- function(X, Y, type="Classification", Regularization="L21",
     #test validity of Lam1 and Lam2
     if (Lam1<0) {stop("Lam1 must be positive")}
     if (Lam2<0) {stop("Lam2 must be positive")}
-    
-    #collect arguments 
+
+    #collect arguments
     args <- list(X=X, Y=Y, lam1=Lam1, lam2=Lam2, opts=opts)
-    
+
     if (Regularization=="CMTL"){
         if (k>0){
             args$k <- k
@@ -120,7 +120,7 @@ MTL <- function(X, Y, type="Classification", Regularization="L21",
     } else if(any(Regularization==c("Graph", "CMTL"))){
         m <- do.call(method, args)
     }
-    
+
     m$call <- match.call()
     m$Lam1 <- args$lam1
     m$Lam2 <- args$Lam2
@@ -149,7 +149,7 @@ MTL <- function(X, Y, type="Classification", Regularization="L21",
 #' data<-Create_simulated_data(Regularization="L21", type="Regression")
 #' #Train
 #' model<-MTL(data$X, data$Y, type="Regression", Regularization="L21",
-#'     Lam1=0.1, Lam2=0, opts=list(init=0,  tol=10^-6, maxIter=1500)) 
+#'     Lam1=0.1, Lam2=0, opts=list(init=0,  tol=10^-6, maxIter=1500))
 #  #Predict
 #' predict(model, newX=data$tX)
 #'
@@ -176,7 +176,7 @@ predict.MTL <- function(object, newX=NULL, ...){
 #'
 #' Calculate the averaged prediction error across tasks. For
 #' classification problem, the miss-classification rate is returned, and for
-#' regression problem, the mean square error(MSE) is returned. 
+#' regression problem, the mean square error(MSE) is returned.
 #'
 #' @param m A MTL model
 #' @param newX The feature matrices of new individuals
@@ -185,9 +185,9 @@ predict.MTL <- function(object, newX=NULL, ...){
 #' @examples
 #' #create example data
 #' data<-Create_simulated_data(Regularization="L21", type="Regression")
-#' #train a model 
+#' #train a model
 #' model<-MTL(data$X, data$Y, type="Regression", Regularization="L21",
-#'     Lam1=0.1, Lam2=0, opts=list(init=0,  tol=10^-6, maxIter=1500)) 
+#'     Lam1=0.1, Lam2=0, opts=list(init=0,  tol=10^-6, maxIter=1500))
 #' #calculate the training error
 #' calcError(model, newX=data$X, newY=data$Y)
 #' #calculate the test error
@@ -214,12 +214,12 @@ calcError <- function(m, newX=NULL, newY=NULL){
 
 
 
-#' Plot the historical values of objective function 
+#' Plot the historical values of objective function
 #'
 #' Plot the values of objective function across iterations in the
 #' optimization procedure. This function indicates the "inner status" of the
 #' solver during the optimization, and could be used for diagnosis of the
-#' solver and training procedure. 
+#' solver and training procedure.
 #'
 #' @param m A trained MTL model
 #' @examples
@@ -251,7 +251,7 @@ plotObj <- function(m){
 #' data<-Create_simulated_data(Regularization="L21", type="Regression")
 #' #train a MTL model
 #' model<-MTL(data$X, data$Y, type="Regression", Regularization="L21",
-#'     Lam1=0.1, Lam2=0, opts=list(init=0,  tol=10^-6, maxIter=1500)) 
+#'     Lam1=0.1, Lam2=0, opts=list(init=0,  tol=10^-6, maxIter=1500))
 #' #print the information of the model
 #' print(model)
 print.MTL <- function(x, ...)
@@ -287,7 +287,7 @@ print.MTL <- function(x, ...)
 #' @param type The type of problem, must be \code{Regression} or
 #'     \code{Classification}
 #' @param Regularization The type of MTL algorithm (cross-task regularizer). The value must be
-#'     one of \{\code{L21}, \code{Lasso}, \code{Trace}, \code{Graph}, \code{CMTL} \} 
+#'     one of \{\code{L21}, \code{Lasso}, \code{Trace}, \code{Graph}, \code{CMTL} \}
 #' @param Lam2 A positive constant \eqn{\lambda_{2}} to improve the
 #'     generalization performance
 #' @param Lam1_seq A positive sequence of \code{Lam1} which controls the
@@ -295,7 +295,7 @@ print.MTL <- function(x, ...)
 #' @param opts Options of the optimization procedure. One can set the
 #'     initial search point, the tolerance and the maximized number of
 #'     iterations through the parameter. The default value is
-#'     \code{list(init=0,  tol=10^-3, maxIter=1000)} 
+#'     \code{list(init=0,  tol=10^-3, maxIter=1000)}
 #' @param G A matrix to encode the network information. This parameter
 #'     is only used in the MTL with graph structure (\code{Regularization=Graph} )
 #' @param k A positive number to modulate the structure of clusters
@@ -305,16 +305,21 @@ print.MTL <- function(x, ...)
 #' @param stratify \code{stratify=TRUE} is used for stratified
 #'     cross-validation
 #' @param nfolds The number of folds
+#' @param foldid An optional list of vectors, where each vector \eqn{k} is of
+#'     the same length as the \eqn{k}th \code{Y} and take values between 1 and
+#'     \code{nfold}, identifying for each task and each observation the fold
+#'     for which the observation belongs in the validation set. If supplied,
+#'     \code{nfold} and \code{stratify} will be ignored
 #' @param parallel \code{parallel=TRUE} is used for parallel computing
 #' @param ncores The number of cores used for parallel computing with the default value of 2
-#' 
+#'
 #' @return The estimated \eqn{\lambda_1} and related information
-#' 
+#'
 #' @examples
 #' #create the example data
 #' data<-Create_simulated_data(Regularization="L21", type="Classification")
 #' #perform the cross validation
-#' cvfit<-cvMTL(data$X, data$Y, type="Classification", Regularization="L21", 
+#' cvfit<-cvMTL(data$X, data$Y, type="Classification", Regularization="L21",
 #'     Lam2=0, opts=list(init=0,  tol=10^-6, maxIter=1500), nfolds=5,
 #'     stratify=TRUE, Lam1_seq=10^seq(1,-4, -1))
 #' #show meta-infomration
@@ -326,9 +331,10 @@ print.MTL <- function(x, ...)
 #' @importFrom doParallel registerDoParallel
 #' @export
 cvMTL <- function(X, Y, type="Classification", Regularization="L21",
-                   Lam1_seq=10^seq(1,-4, -1), Lam2=0, G=NULL, k=2,
-                   opts=list(init=0, tol=10^-3, maxIter=1000),
-                   stratify=FALSE, nfolds=5, ncores=2, parallel=FALSE){
+                  Lam1_seq=10^seq(1,-4, -1), Lam2=0, G=NULL, k=2,
+                  opts=list(init=0, tol=10^-3, maxIter=1000),
+                  stratify=FALSE, nfolds=5, foldid=NULL, ncores=2,
+                  parallel=FALSE){
     #test vilidity of input data
     if (!missing(X) & !missing(Y)){
         if (all(sapply(X, class)!="matrix")){
@@ -343,7 +349,15 @@ cvMTL <- function(X, Y, type="Classification", Regularization="L21",
     task_num <- length(X)
     if(stratify & type=="Regression"){
         stop("stratified CV is not applicable to regression")}
-    cvPar <- getCVPartition(Y, nfolds, stratify)
+    if(is.null(foldid)){
+      cvPar <- getCVPartition(Y, nfolds, stratify)
+    } else {
+      if(length(foldid) != length(Y)){
+        stop("`foldid` and `Y` must be lists of the same length")
+      }
+      cvPar <- makeCVPartition(foldid)
+    }
+
 
 #cv
 if (!parallel){
@@ -409,6 +423,8 @@ cvm <- rowMeans(cvm)
 best_idx <- which(cvm==min(cvm))[1]
 cv <- list(Lam1_seq=Lam1_seq, Lam1.min=Lam1_seq[best_idx],
            Lam2=Lam2, cvm=cvm)
+cv$m <- MTL(X=X, Y=Y, type=type, Regularization=Regularization,
+            Lam1=Lam1_seq[best_idx], Lam2=Lam2, opts=opts, k=k, G=G)
 class(cv) <- "cvMTL"
 return(cv)
 }
@@ -422,7 +438,7 @@ return(cv)
 #' #create the example data
 #' data<-Create_simulated_data(Regularization="L21", type="Classification")
 #' #perform the cv
-#' cvfit<-cvMTL(data$X, data$Y, type="Classification", Regularization="L21", 
+#' cvfit<-cvMTL(data$X, data$Y, type="Classification", Regularization="L21",
 #'     Lam2=0, opts=list(init=0,  tol=10^-6, maxIter=1500), nfolds=5,
 #'     stratify=TRUE, Lam1_seq=10^seq(1,-4, -1))
 #' #plot the curve
@@ -434,12 +450,47 @@ plot.cvMTL <- function(x, ...){
          ylab="error")
 }
 
+#' Predict the outcomes of new individuals
+#'
+#' Predict the outcomes of new individuals. For classification, the
+#'     probability of the individual being assigned to positive label P(y==1) is estimated, and for regression, the
+#'     prediction score is estimated
+#'
+#' @param object A trained cvMTL model
+#' @param newX The feature matrices of new individuals
+#' @param ... Other parameters
+#' @return The predictive outcome
+#' @examples
+#' #Create data
+#' data<-Create_simulated_data(Regularization="L21", type="Regression")
+#' #Train
+#' model<-cvMTL(data$X, data$Y, type="Regression", Regularization="L21",
+#'     Lam1=0.1, Lam2=0, opts=list(init=0,  tol=10^-6, maxIter=1500))
+#  #Predict
+#' predict(model, newX=data$tX)
+#'
+#' @export
+predict.cvMTL <- function(object, newX=NULL, ...){
+  if(!is.null(newX)){
+    object <- object$m
+    task_num <- length(newX)
+    score <- lapply(c(1:task_num), function(x) newX[[x]] %*% object$W[,x] + object$C[x])
+    if (object$type=="Classification"){
+      y <- lapply(c(1:task_num), function(x) exp(score[[x]]))
+      y <- lapply(y, function(x) x/(1+x))
+    }else if (object$type=="Regression"){
+      y <- score
+    }
+    return(y)
+  }else{stop("no new data (X) is provided")}
+}
+
 
 getCVPartition <- function(Y, cv_fold, stratify){
 task_num = length(Y);
 
 randIdx <- lapply(Y, function(x) sample(1:length(x),
-           length(x), replace = FALSE))        
+           length(x), replace = FALSE))
 cvPar = {};
 for (cv_idx in 1: cv_fold){
     # buid cross validation data splittings for each task.
@@ -447,7 +498,7 @@ for (cv_idx in 1: cv_fold){
     cvTest = {};
 
 
-        
+
     #stratified cross validation
     for (t in 1: task_num){
         task_sample_size <- length(Y[[t]]);
@@ -470,9 +521,42 @@ for (cv_idx in 1: cv_fold){
         cvTrain[[t]] = randIdx[[t]][tr_idx]
         cvTest[[t]] = randIdx[[t]][te_idx]
    }
-    
+
     cvPar[[cv_idx]]=list(cvTrain, cvTest);
 }
 return(cvPar)
 }
 
+makeCVPartition <- function(foldid) {
+  V <- length(unique(unlist(lapply(foldid, unique))))
+  folds <- list()
+  for(v in 1:V){
+    folds[[v]] <- list()
+    folds[[v]][[1]] <- list()
+    folds[[v]][[2]] <- list()
+    for(i in 1:length(foldid)){
+      task_i_val <- foldid[[i]]
+      folds[[v]][[1]][[i]] <- which(task_i_val != v)
+      folds[[v]][[2]][[i]] <- which(task_i_val == v)
+    }
+  }
+  return(folds)
+}
+### Test: makeCVPartition recreates cvPar object ###
+# set.seed(435)
+# Y <- RMTL::Create_simulated_data()$Y
+# cvPar <- getCVPartition(Y, cv_fold=2, stratify=F)
+# foldid <- list()
+# for(i in 1:length(Y)){
+#   foldid_taski <- rep(2, length(Y[[i]]))
+#   validx <- cvPar[[1]][[2]][[i]]
+#   foldid_taski[validx] <- 1
+#   foldid[[i]] <- foldid_taski
+# }
+# cvPar_from_foldid <- makeCVPartition(foldid)
+# unique(
+#   identical(lapply(cvPar[[1]][[1]], sort), cvPar_from_foldid[[1]][[1]]),
+#   identical(lapply(cvPar[[1]][[2]], sort), cvPar_from_foldid[[1]][[2]]),
+#   identical(lapply(cvPar[[2]][[1]], sort), cvPar_from_foldid[[2]][[1]]),
+#   identical(lapply(cvPar[[2]][[2]], sort), cvPar_from_foldid[[2]][[2]])
+# )
